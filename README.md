@@ -4,6 +4,7 @@ This is a PoC script for various methods to acheive authenticated remote code ex
 ## Parameters
 * Target - Name or IP of target machine
 * Type - The type of technique to use
+* Protocol - Decides between the DCOM and Wsman (WinRM) protocols as the underlying transport. Default is DCOM
 * Name - For techniques creating named objects (services, tasks etc.)
 * Command - Executable to run
 * CommandArgs - Arguments to the executable
